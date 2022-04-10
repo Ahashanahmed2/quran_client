@@ -1,58 +1,107 @@
-import { Card, Tab, ListGroup, Row, Col, Button } from "react-bootstrap";
+import { Card, Tab, ListGroup, Row, Col } from "react-bootstrap";
+import { NavLink,useParams  } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Classess from "../../../css/index.module.css";
 
 export default function Quran() {
   const [quran, setQuran] = useState([]);
+  const [surah, setSurah] = useState([]);
+    let { al } = useParams();
+
+  //modal
+
   useEffect(() => {
+  axios
+           .get(`${process.env.REACT_APP_URL}/quran/${al}`)
+           .then((allquran) => {
+             setQuran(allquran.data);
+           })
+           .catch((err) => console.log(err));
+ 
+  }, [al]);
+
+  //surah List
+  const listSurah = (id) => {
+  
     axios
-      .get("https://quran-a.herokuapp.com/quran",quran)
-      .then((allquran) => {
-        setQuran(allquran.data);
+      .get(`${process.env.REACT_APP_URL}/quran/surah/${id}`)
+      .then((search) => {
+        search.data.map((value) => {
+          setSurah(value);
+        });
       })
-      .catch((err) => console.log(err));
-  }, []);
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
- 
+  //deleteItem
+  const deleteItem = (deleteId) => {
+    
+    axios
+      .delete(`${process.env.REACT_APP_URL}/quran/delete/${deleteId}`)
+      .then((value) => {
+        alert (value)
+      })
+      .catch((err) => {
+        console.log({message:err});
+      });
+  };
 
- 
   return (
     <>
-      <Row d-grid>
-        <Col className="col-2 d-none d-md-block">
+      <Row>
+        <Col sm={3}>
+          <h3 className="text-center">সুরা</h3>
+
           <ListGroup>
-            <ListGroup.Item>Cras justo odio</ListGroup.Item>
-            <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-            <ListGroup.Item>Morbi leo risus</ListGroup.Item>
-            <ListGroup.Item>Porta ac consectetur ac</ListGroup.Item>
-            <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
+            {quran.map((value, key) => (
+              <ListGroup.Item
+                key={key}
+                className={`${Classess.unActive} text-center my-1 border border-warning`}
+              >
+                <p onClick={() => listSurah(value._id)}> {value.name}</p>
+              </ListGroup.Item>
+            ))}
           </ListGroup>
         </Col>
-        <Col>
+        <Col sm={9}>
           <Card border="secondary" style={{ width: "100%" }}>
-            <Card.Header className="text-center text-dark">"hhhh"</Card.Header>
-
-            <Card.Body>
-              {quran.map((value, key) => (
-                <Card.Text key={key}>
-                  <div className="bg-secondary text-light p-1">
-                    <div className="d-flex text font-weight-bold">
-                      <p>
-                        {value.verses}
-                        <span className="bg-warning text-secondary mx-2 p-1 font-weight-bold">
-                          [{value.name} - {value.number}:{value.versesNumber}]
-                        </span>
-                      </p>
-                      <div className="mx-auto">
-                        <Button type="button" className="btn btn-info">
-                          Updat
-                        </Button>
-                        <Button type="button" className="btn btn-danger">
-                          delete
-                        </Button>
-                      </div>
-                    </div>
+            <Card.Header className=" d-flex justify-content-around text-dark">
+              <h2>{surah.name}</h2>
+              {quran.length > 0 ? (
+                <div className="d-flex text font-weight-bold">
+                  <div
+                    className={`${Classess.unActive} mx-1 px-2 py-1 border border-warning`}
+                  >
+                    <NavLink
+                      className={`${Classess.unActive} mx-1 px-2 py-1  border border-warning`}
+                      to={`/edite/surah/${surah._id}`}
+                    >
+                      update
+                    </NavLink>
                   </div>
+                  <div
+                    onClick={() => deleteItem(surah._id)}
+                    className={`${Classess.unActive} mx-1 px-2 py-1 border border-warning`}
+                  >
+                    delete
+                  </div>
+                </div>
+              ) : (
+                <div></div>
+              )}
+            </Card.Header>
+
+            {quran.length > 0 ? (
+              <Card.Body>
+                <Card.Text>
+                  {surah.verses}
+                  <span className="bg-warning text-secondary mx-2 p-1 font-weight-bold">
+                    [{surah.name} - {surah.number}:{surah.versesNumber}]
+                  </span>
+
                   <Tab.Container id="list-group-tabs-example">
                     <Row>
                       <Col>
@@ -69,17 +118,19 @@ export default function Quran() {
                     <Row>
                       <Col>
                         <Tab.Content>
-                          <Tab.Pane eventKey="#link1">{value.summary}</Tab.Pane>
+                          <Tab.Pane eventKey="#link1">{surah.summary}</Tab.Pane>
                           <Tab.Pane eventKey="#link2">
-                            {value.ancillary_issues}
+                            {surah.ancillary_issues}
                           </Tab.Pane>
                         </Tab.Content>
                       </Col>
                     </Row>
                   </Tab.Container>
                 </Card.Text>
-              ))}
-            </Card.Body>
+              </Card.Body>
+            ) : (
+              <div className="bg-warning text-dark h3 text-center">আপনার বইটি এখনো সংযুক্ত করা হয় নি </div>
+            )}
           </Card>
         </Col>
       </Row>

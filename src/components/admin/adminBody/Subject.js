@@ -1,68 +1,69 @@
-import { Card, Tab, Container, Row, Col, Button } from "react-bootstrap";
-
+import { Card, Row, Col, Button } from "react-bootstrap";
+import { NavLink,useParams} from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
 export default function Subject() {
+const [subject, setSubject] = useState([]);
+  const {al}=useParams()
+
+  
+useEffect(() => {
+    axios
+    .get(`${process.env.REACT_APP_URL}/subject/${al}`)
+    .then((value) => {
+      setSubject(value.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+  , [al]);
+  const deleteSubject = (id) => {
+    
+    axios
+      .delete(`${process.env.REACT_APP_URL}/subject/${id}`)
+      .then((value) => {
+        alert("delete successfull");
+      })
+      .catch((err) => console.log({ message: err }));
+  };
   return (
-    <Container>
-      <h3 className="text-center">BOOK</h3>
+    <>
       <Row>
         <Col>
           <Card border="secondary" style={{ width: "100%" }}>
             <Card.Header className="text-center text-dark">
-              <Row>
-                <Col>বাকারা</Col>
-                <Col>
-                  <div className="mx-auto">
-                    <Button type="button" className="btn btn-info">
-                      Updat
-                    </Button>
-                    <Button type="button" className="btn btn-danger">
-                      delete
-                    </Button>
-                  </div>
-                </Col>
-              </Row>
+              <h3 className="text-center">Subject</h3>
             </Card.Header>
             <Card.Body>
-              <Card.Text>
-                <div className="bg-secondary text-light p-1">
-                  <div className="d-flex text font-weight-bold">
-                    <p>
-                      শুরু করছি আল্লাহর নামে যিনি পরম করুণাময়, অতি দয়ালু।
-                      <span className="bg-warning text-secondary mx-2 p-1 font-weight-bold">
-                        [সুরা ফাতিহা - ১:১]
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </Card.Text>
-              <Card.Text>
-                <div className="bg-secondary text-light p-1">
-                  <div className="d-flex text font-weight-bold">
-                    <p>
-                      শুরু করছি আল্লাহর নামে যিনি পরম করুণাময়, অতি দয়ালু।
-                      <span className="bg-warning text-secondary mx-2 p-1 font-weight-bold">
-                        [সুরা ফাতিহা - ১:১]
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </Card.Text>
-              <Card.Text>
-                <div className="bg-secondary text-light p-1">
-                  <div className="d-flex text font-weight-bold">
-                    <p>
-                      শুরু করছি আল্লাহর নামে যিনি পরম করুণাময়, অতি দয়ালু।
-                      <span className="bg-warning text-secondary mx-2 p-1 font-weight-bold">
-                        [সুরা ফাতিহা - ১:১]
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </Card.Text>
+              <Row className="d-flex flex-wrap font-weight-bold">
+                {subject.map((value,key) => (
+                  <Col key={key} className="lead text-center text-light bg-secondary p-2 mx-1">
+                    
+                      <p>{value.book}</p>
+                      <p>{value.subject_name}</p>
+                      <NavLink
+                        className="btn btn-info"
+                        to={`/edite/subject/${value._id}`}
+                      >
+                        update
+                      </NavLink>
+                      <div
+                        onClick={() => deleteSubject(value._id)}
+                        
+                        className="btn btn-danger"
+                      >
+                        delete
+                      </div>
+                   
+                  </Col>
+                ))}
+              </Row>
             </Card.Body>
           </Card>
         </Col>
       </Row>
-    </Container>
+    </>
   );
 }

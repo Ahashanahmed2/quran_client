@@ -1,7 +1,6 @@
 
 
-import Classess from "../../css/index.module.css";
-import { Outlet,} from "react-router-dom";
+import { Outlet} from "react-router-dom";
 
 import AdminHeader from './AdminHeader'
 
@@ -11,9 +10,9 @@ import AdminHeader from './AdminHeader'
   return (
     <>
     <AdminHeader />
-      <div className={Classess.center1}>
-        (<Outlet />
-      </div>
+     
+        <Outlet />
+     
     </>
   );
 }

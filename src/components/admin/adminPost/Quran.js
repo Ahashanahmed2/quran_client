@@ -1,4 +1,4 @@
-import {useState,useEffect}from 'react'
+import {useState}from 'react'
 import { Form, FloatingLabel, Container, Row, Col, Button } from "react-bootstrap";
 import Classess from "../../../css/index.module.css";
 import { NavLink } from "react-router-dom";
@@ -21,9 +21,9 @@ export default function Quran() {
  
    
 
-  const sub = () => {
+  const qur = () => {
        axios
-         .post("https://quran-a.herokuapp.com/quran", quran)
+         .post(`${process.env.REACT_APP_URL}/quran`, quran)
          .then((data) => {
            console.log(data.data);
            alert(data.data);
@@ -34,18 +34,6 @@ export default function Quran() {
   
   return (
     <>
-      <div className="d-flex flex-column mt-5 mx-auto">
-        <NavLink
-          className={({ isActive }) =>
-            isActive
-              ? `${Classess.deleteUpdateHover} ${Classess.deleteUpdateActive} px-4   border border-warning`
-              : `${Classess.deleteUpdateHover} ${Classess.deleteUpdateUnActive} px-4  border border-info`
-          }
-          to="book"
-        >
-          <h5>Edite And Delete</h5>
-        </NavLink>
-      </div>
 
       <Container>
         <Row className="d-grid justify-content-center">
@@ -170,7 +158,7 @@ export default function Quran() {
         <div className="d-grid gap-2">
           <Button
             type="submit"
-            onClick={sub}
+            onClick={qur}
             className="mb-3"
             variant="secondary"
             size="sm"

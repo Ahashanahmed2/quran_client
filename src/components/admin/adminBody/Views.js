@@ -1,20 +1,19 @@
 
 import {
 
-  Container,
   Row,
   Col,
-  Button,
+ 
 } from "react-bootstrap";
 
 //Admin Body
-import Book from "../adminPost/Book";
+import Book from "./Book";
 import Quran from "./Quran.js";
 import Subject from "./Subject.js";
 
 export default function Views() {
   return (
-    <Container>
+    <>
       <Row>
         <Col>
           <Quran />
@@ -22,15 +21,15 @@ export default function Views() {
       </Row>
       <Row>
         <Col>
-         
-          <Book />
+          <Subject />
         </Col>
       </Row>
       <Row>
         <Col>
-          <Subject />
+          
+          <Book />
         </Col>
       </Row>
-    </Container>
+    </>
   );
 }

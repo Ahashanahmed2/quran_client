@@ -1,11 +1,12 @@
+
 import { Card, Tab, ListGroup, Row, Col, Button } from "react-bootstrap";
-import Topbar from "./Topbar";
+import Topbar from "./header/Topbar";
 export default function Surah() {
     return (
         <>
             <Topbar/>
-        <Row d-grid>
-          
+        <Row>
+      
           <Col>
             <Card border="secondary" style={{ width: "100%" }}>
               <Card.Header className="text-center text-dark">
