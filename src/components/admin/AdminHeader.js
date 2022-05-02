@@ -1,34 +1,36 @@
-import { NavLink,useNavigate } from "react-router-dom";
+import { NavLink,useNavigate} from "react-router-dom";
 import { Container, Row, Col, Dropdown } from "react-bootstrap";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Classess from "../../css/index.module.css";
+import axios from "axios";
 export default function AdminHeader(){
 const [book, setBook] = useState("তাফসির গ্রন্থসমূহ");
+const [bookName, setBookName] = useState([]);
 
      const navigate = useNavigate();
 
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_URL}/book`)
+      .then(value =>{setBookName(value.data)})
+      .catch((err) => {
+        console.log({ message: err });
+      });
+  },[])
+
   const changeBookName = (e) => {
+    bookName.map(val => {
+      
+       if (e === val.book) {
+         setBook(e);
+       } 
+    })
    
-    if (e.target.name == "ibn kasir") {
-      setBook(e.target.innerText);
-      
-    } else if (e.target.name == "ibn hamja") {
- 
-        setBook(e.target.innerText);
-    } else if (e.target.name == "ibn hisham") {
-      
-        setBook(e.target.innerText);
-}
+   
   }
   return (
     <Container fluid className="bg-dark py-2 ">
       <Row>
-        <Col
-          onClick={() => navigate(-1)}
-          className={`${Classess.active} ${Classess.hover}   border border-warning`}
-        >
-          GO BACK
-        </Col>
         <Col>
           <Dropdown>
             <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -36,51 +38,22 @@ const [book, setBook] = useState("তাফসির গ্রন্থসমূ
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-          
-
-              <Dropdown.Item>
-                <NavLink
-                  name="ibn kasir"
-                  onClick={(e) => changeBookName(e)}
-                  className={({ isActive }) =>
-                    isActive
-                      ? `${Classess.hover} ${Classess.active} mx-2 px-2 py-1 rounded-pill border border-warning`
-                      : `${Classess.hover} ${Classess.unActive} mx-2 px-2 py-1 rounded-pill border border-warning`
-                  }
-                  to="view/ইবনে কাসির"
-                >
-                  তাফসির ইবনে কাসির
-                </NavLink>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <NavLink
-                  name="ibn hamja"
-                  onClick={(e) => changeBookName(e)}
-                  className={({ isActive }) =>
-                    isActive
-                      ? `${Classess.hover} ${Classess.active} mx-2 px-2 py-1 rounded-pill border border-warning`
-                      : `${Classess.hover} ${Classess.unActive} mx-2 px-2 py-1 rounded-pill border border-warning`
-                  }
-                  to="view/ইবনে হামজা"
-                >
-                  তাফসির ইবনে হামজা
-                </NavLink>
-              </Dropdown.Item>
-             
-              <Dropdown.Item>
-                <NavLink
-                  name="ibn hisham"
-                  onClick={(e) => changeBookName(e)}
-                  className={({ isActive }) =>
-                    isActive
-                      ? `${Classess.hover} ${Classess.active} mx-2 px-2 py-1 rounded-pill border border-warning`
-                      : `${Classess.hover} ${Classess.unActive} mx-2 px-2 py-1 rounded-pill border border-warning`
-                  }
-                  to="view/মারেফুল কোরআন"
-                >
-                  মারেফুল কোরআন
-                </NavLink>
-              </Dropdown.Item>
+              {bookName.map((values,key) => (
+                <Dropdown.Item key={key}>
+                  <NavLink
+                    name={values.book}
+                    onClick={(e) => changeBookName(e.target.name)}
+                    className={({ isActive }) =>
+                      isActive
+                        ? `${Classess.hover} ${Classess.active} mx-2 px-2 py-1 rounded-pill border border-warning`
+                        : `${Classess.hover} ${Classess.unActive} mx-2 px-2 py-1 rounded-pill border border-warning`
+                    }
+                    to={`view/${values.book}`}
+                  >
+                   {values.book}
+                  </NavLink>
+                </Dropdown.Item>
+              ))}
             </Dropdown.Menu>
           </Dropdown>
         </Col>
@@ -120,12 +93,6 @@ const [book, setBook] = useState("তাফসির গ্রন্থসমূ
           >
             subject
           </NavLink>
-        </Col>
-        <Col
-          onClick={() => navigate(1)}
-          className={`${Classess.active} ${Classess.hover}  border border-warning`}
-        >
-          GO FORWARD
         </Col>
       </Row>
     </Container>

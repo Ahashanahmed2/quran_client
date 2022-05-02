@@ -56,7 +56,13 @@ const[book,setBook]=useState([])
                       update
                     </NavLink>
                     <div
-                      onClick={() => deleteBook(value._id)}
+                      onClick={() => {
+                        if (window.confirm("are your data is delete") === true) {
+                          deleteBook(value._id);
+                        } else {
+                          alert("data is not delete")
+                        }
+                      } }
                       className="btn btn-danger"
                     >
                       delete

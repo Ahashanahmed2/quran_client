@@ -50,7 +50,11 @@ useEffect(() => {
                         update
                       </NavLink>
                       <div
-                        onClick={() => deleteSubject(value._id)}
+                      onClick={() => {
+                        if (window.confirm("your data is is delete") === true) {
+                          deleteSubject(value._id);
+                        }else{alert("data is not delete")}
+                        } }
                         
                         className="btn btn-danger"
                       >
